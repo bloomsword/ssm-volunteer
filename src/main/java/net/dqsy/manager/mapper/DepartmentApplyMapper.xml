@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dqsy.manager.mapper.DepartmentApplyMapper">
+
+   <insert id="save">
+        INSERT INTO department_apply
+        (accountId, departmentId, type, content, status, createTime) VALUES (#{departmentApply.accountId}, #{departmentApply.departmentId}, #{departmentApply.type}, #{departmentApply.content}, #{departmentApply.status}, #{departmentApply.createTime})
+    </insert>
+
+    <select id="findApplyList" resultType="net.dqsy.manager.pojo.DepartmentApply">
+        SELECT * from department_apply
+        WHERE 1=1
+        <if test="accountId != 0">
+            AND
+            department_apply.accountId = #{accountId}
+        </if>
+
+        ORDER  BY
+        status ASC , createTime DESC
+        <if test="limit != 0">
+            LIMIT #{start},#{limit}
+        </if>
+
+
+    </select>
+
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*) from department_apply
+        WHERE 1=1
+        <if test="accountId != 0">
+            AND
+            department_apply.accountId = #{accountId}
+        </if>
+    </select>
+
+    <select id="findById" resultType="net.dqsy.manager.pojo.DepartmentApply">
+        SELECT
+        * from department_apply
+        WHERE
+        department_apply.id = #{applyId}
+    </select>
+
+    <update id="deleteById">
+        DELETE  FROM  department_apply WHERE  id = #{applyId}
+    </update>
+
+    <update id="update">
+        update department_apply SET status = #{status} WHERE id = #{applyId}
+    </update>
+
+</mapper>

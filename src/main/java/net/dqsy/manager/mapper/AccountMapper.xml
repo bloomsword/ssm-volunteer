@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dqsy.manager.mapper.AccountMapper">
+
+
+    <!--根据用户名查询用户信息-->
+    <select id="findAccountByNameAndPassword" resultType="net.dqsy.manager.pojo.Account">
+        select
+        *
+        FROM
+        account
+        WHERE
+        account.username = #{userName}
+        and
+        account.password = #{userPwd}
+    </select>
+
+    <select id="findAccountList" resultType="net.dqsy.manager.pojo.Account">
+        SELECT
+        *
+        from
+        account
+        WHERE 1 = 1
+        <if test="types != null">
+            and  type in
+            <foreach item="type" index="index" collection="types" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </if>
+        <if test="userName != null">
+            and account.username LIKE CONCAT('%',#{userName},'%')
+        </if>
+
+        ORDER  BY
+        id
+        ASC
+        <if test="limit != 0">
+        LIMIT #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        from
+        account
+        WHERE 1 = 1
+        <if test="types != null">
+            and  type in
+            <foreach item="type" index="index" collection="types" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </if>
+        <if test="userName != null">
+            and account.username LIKE CONCAT('%',#{userName},'%')
+        </if>
+
+
+    </select>
+
+    <insert id="save">
+        INSERT INTO account
+        (id, username, password, sex, email, screenName, locale, enabled, activated, registertime, lastlogintime, registerip, mobile, type, salt, createtime) VALUES (#{account.id}, #{account.username},#{account.password}, #{account.sex}, #{account.email}, #{account.screenName}, #{account.locale}, #{account.enabled}, #{account.activated}, #{account.registerTime}, #{account.lastloginTime}, #{account.registerIp}, #{account.mobile}, #{account.type}, #{account.salt}, #{account.createTime})
+
+
+    </insert>
+
+
+    <select id="findAccountById" resultType="net.dqsy.manager.pojo.Account">
+        SELECT
+        *
+        from
+        account
+        WHERE account.id = #{accountId}
+
+    </select>
+
+    <update id="update">
+        update account SET username = #{account.username}, sex = #{account.sex}, screenName = #{account.screenName},
+        mobile = #{account.mobile}, email = #{account.email}  WHERE id = #{account.id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM account WHERE account.id = #{account_id}
+    </delete>
+
+</mapper>
